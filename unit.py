@@ -33,4 +33,4 @@ async def is_verified(user_id):
     if user_id in VERIFIED_USERS:
         if VERIFIED_USERS[user_id] > datetime.now(pytz.timezone("Asia/Kolkata")):
             return True
-    return False￼Enter
+    return False
