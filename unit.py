@@ -1,36 +1,35 @@
-import pytz
 import random
 import string
 from datetime import datetime, timedelta
-from shortzy import Shortzy
+import requests
 from info import API, URL
 
-TOKENS = {}
-VERIFIED_USERS = {}
+VERIFIED_USERS = {}  # Store verified users in memory
 
-# Generate a unique token
 async def generate_token():
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=7))
+    """Generate a unique token for the user."""
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
 
-# Generate a shortened verification link
-async def get_verify_shorted_link(link):
-    shortzy = Shortzy(api_key=API, base_site=URL)
-    return await shortzy.convert(link)
+async def get_verify_shorted_link(verify_link):
+    """Shorten the verification link using the shortener API."""
+    response = requests.get(f"{URL}?api={API}&url={verify_link}")
+    if response.status_code == 200:
+        return response.json().get("shortenedUrl", verify_link)
+    return verify_link
 
-# Verify if the user token is valid and not expired
 async def verify_token(user_id, token):
-    if user_id in TOKENS and TOKENS[user_id]["token"] == token:
-        if TOKENS[user_id]["expiry"] > datetime.now(pytz.timezone("Asia/Kolkata")):
+    """Check if the token is valid and not expired."""
+    user_data = VERIFIED_USERS.get(user_id)
+    if user_data and user_data["token"] == token:
+        if datetime.now() < user_data["expiry"]:
             return True
     return False
 
-# Save user verification details
 async def save_verification(user_id):
-    VERIFIED_USERS[user_id] = datetime.now(pytz.timezone("Asia/Kolkata")) + timedelta(days=1)
+    """Save user verification."""
+    VERIFIED_USERS[user_id] = {"verified": True}
 
-# Check if a user is verified
 async def is_verified(user_id):
-    if user_id in VERIFIED_USERS:
-        if VERIFIED_USERS[user_id] > datetime.now(pytz.timezone("Asia/Kolkata")):
-            return True
-    return False
+    """Check if the user is verified."""
+    user_data = VERIFIED_USERS.get(user_id)
+    return user_data and user_data.get("verified", False)
