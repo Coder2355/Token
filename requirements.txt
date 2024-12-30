@@ -1,4 +1,4 @@
 pyrogram==2.0.106
 tgcrypto==1.2.3
 pytz==2023.3
-shortzy==1.0.3  # Replace with the correct version of your Shortzy library if applicable￼Enter
+shortzy  # Replace with the correct version of your Shortzy library if applicable￼Enter
