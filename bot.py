@@ -6,12 +6,13 @@ API_ID = "28015531"
 API_HASH = "2ab4ba37fd5d9ebf1353328fc915ad28"
 BOT_TOKEN = "7800807621:AAHctirzl9smHyCPXZbtSBkTlyT6vVgKbVE"
 BOT_USERNAME = "Hshdgdvdv23bot"
+GROUP_ID = -1002176916778
 
 app = Client("group_verification_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
 TOKENS = {}
 
-@app.on_message(filters.group)
+@app.on_message(filters.group & filters.chat(GROUP_ID) & (filters.video |filters.document | filters.text | filters.audio))
 async def handle_group_messages(client, message):
     """
     Restrict unverified users in the group and guide them to verify.
