@@ -12,7 +12,7 @@ app = Client("group_verification_bot", api_id=API_ID, api_hash=API_HASH, bot_tok
 
 TOKENS = {}
 
-@app.on_message(filters.group & filters.chat(GROUP_ID) & (filters.video |filters.document | filters.text | filters.audio) & filters.private)
+@app.on_message(filters.group)
 async def handle_group_messages(client, message):
     """
     Restrict unverified users in the group and guide them to verify.
@@ -34,7 +34,7 @@ async def handle_group_messages(client, message):
         )
         return
 
-@app.on_message(filters.command("start") & filters.private)
+@app.on_message(filters.group & filters.command("start") )
 async def verify_user(client, message):
     """
     Handle verification process through the link.
